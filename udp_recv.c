@@ -30,13 +30,13 @@ int main(int argc, char *argv[]){
     while (1){
 #if CHECK_CLIENT // 送信元を特定する場合
         sa_len = sizeof(struct sockaddr_in);
-        len = recvfrom(sock, buff, 4096, 0, (struct sockaddr*)&sa2, &sa_len);
+        len = recvfrom(sock, buff, 4096, 0, (struct sockaddr *)&sa2, &sa_len);
         buff[len] = '\0';
         printf("[%s:%d] %s\n", inet_ntoa(sa2.sin_addr), ntohs(sa2.sin_port), buff);
 #else //特定しない場合
         len = recvfrom(sock, buff, 4096, 0, NULL, NULL);
         write(fd, buff, len);
-#endif
+#endif 
     }
     close(sock);
     return 0;
