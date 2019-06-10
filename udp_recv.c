@@ -9,7 +9,8 @@
 int main(int argc, char *argv[]){
     int len;
     char buff[4096];
-    struct sockaddr_in sa = { 0 };
+    // https://sscrisk.hatenablog.com/entries/2006/12/12
+    struct sockaddr_in sa = { 0 }; 
 
     #if CHECK_CLIENT
     struct sockaddr_in sa2 = { 0 };
@@ -17,7 +18,11 @@ int main(int argc, char *argv[]){
     #endif
 
     int opt = 1;
+    // http://neineigh.hatenablog.com/entry/2013/09/28/185053
+    // https://linuxjm.osdn.jp/html/LDP_man-pages/man2/socket.2.html
     int sock = socket(AF_INET, SOCK_DGRAM, 0);
+
+
     setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 
     // 自分用のソケットアドレスの作成
@@ -33,6 +38,8 @@ int main(int argc, char *argv[]){
         len = recvfrom(sock, buff, 4096, 0, (struct sockaddr *)&sa2, &sa_len);
         buff[len] = '\0';
         printf("[%s:%d] %s\n", inet_ntoa(sa2.sin_addr), ntohs(sa2.sin_port), buff);
+        // sendto(sock, buff, len - 1, 0, (struct sockaddr*)&sa, sizeof(sa)); //add
+        buff[0] = '\0';
 #else //特定しない場合
         len = recvfrom(sock, buff, 4096, 0, NULL, NULL);
         write(fd, buff, len);

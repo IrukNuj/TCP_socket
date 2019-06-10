@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -13,8 +14,11 @@ int main(int argc, char *argv[]){
     sa.sin_port = htons(atoi(argv[2])); //host 2 network short
     sa.sin_addr.s_addr = inet_addr(argv[1]);
 
+    bind(sock, (struct sockaddr*)&sa, sizeof(struct sockaddr_in)); //add
+
     while (0 < (len = read(0, buff, 256))){
         sendto(sock, buff, len - 1, 0, (struct sockaddr*)&sa, sizeof(sa));
+        printf("%s", buff); // add
     }
     close(sock);
     return 0;
