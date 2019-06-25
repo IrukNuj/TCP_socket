@@ -24,14 +24,20 @@ int main(int argc, char *argv[]) {
     bind(lsock, (struct sockaddr *)&sa, sizeof(struct sockaddr_in));
     
     //リスニングソケットにする。
-    listen(lsock, SOMAXCONN)// /proc/sys/net/core/somaxconn
+    listen(lsock, SOMAXCONN);// /proc/sys/net/core/somaxconn
     while(1) {
         csock = accept(lsock, NULL, NULL);
         if (fork() == 0) {
             close(lsock);
             printf("...Start Child Proc:%d\n", getpid());
             while (0 < (len = recv(csock, buff, 4096, MSG_NOSIGNAL)))
+                send(csock, buff, len, MSG_NOSIGNAL);
+            close(csock);
+            printf("\t...Finished Child Proc:%d\n", getpid());
+            _exit(0);
         }
+        close(csock);
     }
-
+    close(lsock);
+    return 0;
 }
